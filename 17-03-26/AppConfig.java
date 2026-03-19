@@ -4,6 +4,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackages = "Assignment6_17March")
+@ComponentScan(basePackages = "17-03-2026")
 public class AppConfig {
 }

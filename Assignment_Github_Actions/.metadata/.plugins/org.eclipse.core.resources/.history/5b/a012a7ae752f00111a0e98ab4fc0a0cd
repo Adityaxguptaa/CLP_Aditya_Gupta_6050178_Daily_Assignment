@@ -1,0 +1,32 @@
+package com.example.demo.service;
+
+package com.cg.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.cg.entity.Price;
+import com.cg.repository.PriceRepository;
+
+@Service
+public class PriceService {
+
+    private final PriceRepository repository;
+
+    public PriceService(PriceRepository repository) {
+        this.repository = repository;
+    }
+
+    public Price save(Price price) {
+        return repository.save(price);
+    }
+
+    public Price findById(Long pid) {
+        return repository.findById(pid).orElse(null);
+    }
+
+    public List<Price> findAll() {
+        return repository.findAll();
+    }
+}

@@ -1,0 +1,98 @@
+package com.example.demo.service;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class CartService {
+
+    private final CartRepository repository;
+    private final RestTemplate restTemplate;
+
+    public CartService(CartRepository repository, RestTemplate restTemplate) {
+        this.repository = repository;
+        this.restTemplate = restTemplate;
+    }
+
+    public CartResponse addProduct(Long cartId, Long pid) {
+        Cart cart = (cartId == null) ? new Cart() : repository.findById(cartId).orElse(new Cart());
+
+        ProductCatalog product = restTemplate.getForObject(
+                "http://PRODUCTCATALOG-SERVICE/catalogs/products/" + pid,
+                ProductCatalog.class);
+
+        if (product == null) {
+            return null;
+        }
+
+        cart.getProductIds().add(pid);
+        cart = repository.save(cart);
+
+        return getCart(cart.getCartId());
+    }
+
+    public CartResponse getCart(Long id) {
+        Cart cart = repository.findById(id).orElse(null);
+        if (cart == null) {
+            return null;
+        }
+
+        Map<Long, ProductCatalog> products = new LinkedHashMap<>();
+        for (Long pid : cart.getProductIds()) {
+            ProductCatalog product = restTemplate.getForObject(
+                    "http://PRODUCTCATALOG-SERVICE/catalogs/products/" + pid,
+                    ProductCatalog.class);
+            products.put(pid, product);
+        }
+
+        List<ProductCatalog> recommendations = restTemplate.exchange(
+                "http://RECOMMENDATION-SERVICE/recommendations",
+                HttpMethod.POST,
+                new org.springframework.http.HttpEntity<>(cart.getProductIds()),
+                new ParameterizedTypeReference<List<ProductCatalog>>() {
+                }).getBody();
+
+        CartResponse response = new CartResponse();
+        response.setCartId(cart.getCartId());
+        response.setProducts(products);
+        response.setRecommendations(recommendations);
+
+        return response;
+    }
+
+    public static class CartResponse {
+        private Long cartId;
+        private Map<Long, ProductCatalog> products;
+        private List<ProductCatalog> recommendations;
+
+        public Long getCartId() {
+            return cartId;
+        }
+
+        public void setCartId(Long cartId) {
+            this.cartId = cartId;
+        }
+
+        public Map<Long, ProductCatalog> getProducts() {
+            return products;
+        }
+
+        public void setProducts(Map<Long, ProductCatalog> products) {
+            this.products = products;
+        }
+
+        public List<ProductCatalog> getRecommendations() {
+            return recommendations;
+        }
+
+        public void setRecommendations(List<ProductCatalog> recommendations) {
+            this.recommendations = recommendations;
+        }
+    }
+}

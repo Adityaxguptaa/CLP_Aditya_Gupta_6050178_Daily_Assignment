@@ -1,0 +1,42 @@
+package com.example.demo.controller;
+
+package com.cg.controller;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.cg.model.CatalogInput;
+import com.cg.model.ProductCatalog;
+import com.cg.service.CatalogService;
+
+@RestController
+@RequestMapping("/catalogs")
+public class CatalogController {
+
+    private final CatalogService service;
+
+    public CatalogController(CatalogService service) {
+        this.service = service;
+    }
+
+    @PostMapping("/products")
+    public ProductCatalog addProduct(@RequestBody CatalogInput input) {
+        return service.addProduct(input);
+    }
+
+    @GetMapping("/products")
+    public List<ProductCatalog> getAllProducts() {
+        return service.getAllProducts();
+    }
+
+    @GetMapping("/products/{id}")
+    public ProductCatalog getById(@PathVariable Long id) {
+        return service.getById(id);
+    }
+
+    @GetMapping("/products/category/{category}")
+    public List<ProductCatalog> getByCategory(@PathVariable String category) {
+        return service.getByCategory(category);
+    }
+}

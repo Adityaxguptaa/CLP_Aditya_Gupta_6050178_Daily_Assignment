@@ -1,0 +1,59 @@
+package com.example.demo.model;
+
+public class CatalogRequest {
+
+    private Long pid;
+    private String pname;
+    private String pcategory;
+    private double price;
+    private double discount;
+    private int noOfItemsLeft;
+
+    public Long getPid() {
+        return pid;
+    }
+
+    public void setPid(Long pid) {
+        this.pid = pid;
+    }
+
+    public String getPname() {
+        return pname;
+    }
+
+    public void setPname(String pname) {
+        this.pname = pname;
+    }
+
+    public String getPcategory() {
+        return pcategory;
+    }
+
+    public void setPcategory(String pcategory) {
+        this.pcategory = pcategory;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public int getNoOfItemsLeft() {
+        return noOfItemsLeft;
+    }
+
+    public void setNoOfItemsLeft(int noOfItemsLeft) {
+        this.noOfItemsLeft = noOfItemsLeft;
+    }
+}

@@ -1,0 +1,26 @@
+package com.example.demo.controller;
+
+package com.cg.controller;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.cg.model.ProductCatalog;
+import com.cg.service.RecommendationService;
+
+@RestController
+@RequestMapping("/recommendations")
+public class RecommendationController {
+
+    private final RecommendationService service;
+
+    public RecommendationController(RecommendationService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    public List<ProductCatalog> getRecommendations(@RequestBody List<Long> productIds) {
+        return service.recommend(productIds);
+    }
+}
